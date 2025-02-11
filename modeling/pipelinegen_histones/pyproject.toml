@@ -5,10 +5,23 @@ build-backend = "hatchling.build"
 [project]
 name = "pipelinegen_histones"
 version = "0.0.1"
-description = "A plugin for training pipelines"
+description = "A plugin for training pipelines for the Histones project"
 authors = [
-    { name="Jeffrey Barahona", email="your.email@example.com" }
+    { name="Jeffrey Barahona", email="yjeffreyabarahona@example.com" }
 ]
 dependencies = [
-    # Add your project dependencies here
+    "dataclasses",
+    "pytorch-lightning",
+    "ray[train,tune]",
+    "torch",
+    "torchaudio",
+    "torchmetrics",
+    "torchvision",
+    "wandb",
+    "scipy",
+    "scikit-learn",
+    "pipelinegen",
 ]
+
+[tool.uv.sources]
+pipelinegen = { path = "../../../../frameworks/pipelinegen" }
