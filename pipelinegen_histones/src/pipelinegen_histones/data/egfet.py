@@ -33,10 +33,10 @@ from pathlib import Path
 from typing import List, Optional
 
 # My libraries
-from histones_modeling.egfet.load_data import load_egfet_data
+from histones.egfet.load_data import load_egfet_dataset
 from pipelinegen_histones.utils import RepeatedGroupKFold
-from pipelinegen.core.data.factory import DatasetFactory
-
+from pipelinegen.core.data.factory import AbstractDatasetBuilder
+from pipelinegen.core.data.utils import MultiArgCompose
 
 def prepare_data(data, stratify_level=2):
     """Get the labels, concentrations, and split groups for the dataset
@@ -121,7 +121,7 @@ class EGFETDataset(Dataset):
         downsample: Optional[int] = None,
         verbose_loading: int = 0,
     ):
-        df = load_egfet_data(
+        df = load_egfet_dataset(
             path,
             exclude_experiment=exclude_experiment,
             exclude_concentration=exclude_concentration,
@@ -224,3 +224,18 @@ class EGFETDataset(Dataset):
             train_dataset = torch.utils.data.Subset(dataset, train_indices)
             test_dataset = torch.utils.data.Subset(dataset, test_indices)
             yield train_dataset, test_dataset
+
+class EGFETDatasetBuilder(AbstractDatasetBuilder):
+    name = "egfet"
+
+    def build(
+        self,
+        train_transforms:MultiArgCompose = None,
+        val_transforms:MultiArgCompose = None,
+        **config,
+    ) -> EGFETDataset:
+        dataset_name = config["name"]
+        dataset_params = config["args"]
+        dataset = self._builders[dataset_name](**dataset_params)
+        return dataset
+    
