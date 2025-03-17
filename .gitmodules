@@ -1,3 +1,0 @@
-[submodule "pipelinegen"]
-	path = pipelinegen_histones/packages/pipelinegen
-	url = git@github.com:jalebara/pipelinegen.git
