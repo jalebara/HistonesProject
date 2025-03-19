@@ -4,7 +4,6 @@ tsfresh
 scipy<=1.14.0
 numpy
 lmfit
-ray[tune]
 matplotlib
 seaborn
 plotly
@@ -13,9 +12,8 @@ tqdm
 ipykernel
 openpyxl
 nbformat>=4.2.0
-pytorch_lightning
 torch
 torchvision
 xgboost
-scikit-learn==1.5.2
+scikit-learn
 rich
