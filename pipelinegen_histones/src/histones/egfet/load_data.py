@@ -5,7 +5,7 @@ import sys
 from typing import Dict
 import re
 from collections import defaultdict
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 r1 = re.compile("s.\.xlsx$")  # ignore summary files
 
@@ -90,7 +90,7 @@ def flatten_data(data: pd.DataFrame) -> pd.DataFrame:
 def load_egfet_file(
     data_path,
     flatten: bool = False,
-    downsample: int | None = None,
+    downsample: Optional[int] = None,
     verbose: int = 0,
 ) -> pd.DataFrame:
     """
@@ -116,9 +116,9 @@ def load_egfet_file(
 
 def load_egfet_folder(
     data_path: str,
-    exclude_concentration: List[float] | None = None,
+    exclude_concentration: Optional[List[float]] = None,
     flatten: bool = False,
-    downsample: int | None = None,
+    downsample: Optional[int] = None,
     verbose: int = 0,
 ) -> pd.DataFrame:
     """
@@ -190,11 +190,11 @@ def load_egfet_folder(
 
 def load_egfet_dataset(
     data_path: str,
-    exclude_experiments: List[str] | None = None,
-    exclude_concentration: List[float] | None = None,
-    load_only: List[str] | None = None,
+    exclude_experiments: Optional[List[str]] = None,
+    exclude_concentration: Optional[List[float]] = None,
+    load_only: Optional[List[str]] = None,
     flatten: bool = False,
-    downsample: int | None = None,
+    downsample: Optional[int] = None,
     verbose: int = 0,
 ) -> pd.DataFrame:
     """Load the EGFET dataset folder by folder.
