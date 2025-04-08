@@ -1,11 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import torch
-
-# custom library imports
-from pipelinegen.core.types import TorchModelMixin
+from torch import nn
 
 
-class EncoderDecoderMixin(TorchModelMixin):
+class EncoderDecoderMixin(nn.Module, metaclass=ABCMeta):
     @abstractmethod
     def encode(self, data: torch.Tensor) -> torch.Tensor: ...
 

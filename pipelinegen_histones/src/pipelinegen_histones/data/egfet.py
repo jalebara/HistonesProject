@@ -38,6 +38,7 @@ from pipelinegen_histones.utils import RepeatedGroupKFold
 from pipelinegen.core.data.factory import AbstractDatasetBuilder
 from pipelinegen.core.data.utils import MultiArgCompose
 
+
 def prepare_data(data, stratify_level=2):
     """Get the labels, concentrations, and split groups for the dataset
 
@@ -104,9 +105,7 @@ def get_train_test_group_splits(stratify_groups, test_size=0.2):
     taking into account the stratify groups"""
     indices = np.arange(len(stratify_groups))
     train_indices, test_indices = next(
-        GroupShuffleSplit(test_size=test_size, n_splits=1).split(
-            indices, groups=stratify_groups
-        )
+        GroupShuffleSplit(test_size=test_size, n_splits=1).split(indices, groups=stratify_groups)
     )
     return train_indices, test_indices
 
@@ -129,9 +128,7 @@ class EGFETDataset(Dataset):
             downsample=downsample,
             verbose_loading=verbose_loading,
         )
-        self.data, self.target, self.concentration, self.stratify_groups = prepare_data(
-            df
-        )
+        self.data, self.target, self.concentration, self.stratify_groups = prepare_data(df)
         self.data = torch.tensor(self.data, dtype=torch.float32)
         self.target = torch.tensor(self.target, dtype=torch.long)
 
@@ -225,17 +222,15 @@ class EGFETDataset(Dataset):
             test_dataset = torch.utils.data.Subset(dataset, test_indices)
             yield train_dataset, test_dataset
 
+
 class EGFETDatasetBuilder(AbstractDatasetBuilder):
     name = "egfet"
 
     def build(
         self,
-        train_transforms:MultiArgCompose = None,
-        val_transforms:MultiArgCompose = None,
         **config,
     ) -> EGFETDataset:
         dataset_name = config["name"]
         dataset_params = config["args"]
         dataset = self._builders[dataset_name](**dataset_params)
         return dataset
-    
