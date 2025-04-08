@@ -5,8 +5,13 @@ import torch.nn.functional as F
 from typing import Dict, Any
 
 # Custom library imports
-from pipelinegen_histones.models.mixins import EncoderDecoderMixin
 from pipelinegen.core.models.factory import ModelFactory
+
+
+class EncoderDecoderMixin(nn.Module):
+    def encode(self, data: torch.Tensor) -> torch.Tensor: ...
+
+    def decode(self, data: torch.Tensor) -> torch.Tensor: ...
 
 
 class SimpleHistonesAutoencoder(EncoderDecoderMixin):
