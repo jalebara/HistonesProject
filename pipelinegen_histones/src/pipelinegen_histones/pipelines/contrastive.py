@@ -124,5 +124,5 @@ class ContrastivePipelineBuilder(AbstractPipelineBuilder):
         return SimpleObjectivePipelineStage(
             dataset_config=dataset_config,
             objective_config=objective_config,
-            pipeline_class=AutoencoderContrastiveObjective,
+            objective=AutoencoderContrastiveObjective,
         )

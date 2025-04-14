@@ -1,0 +1,4 @@
+dataset:
+  name: egfet
+  args:
+    path: "/home/jalebara//Data/Histones/EGFETData/"

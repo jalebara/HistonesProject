@@ -1,0 +1,11 @@
+type: contrastive_autoencoder
+epochs: 1
+criterion: MSELoss
+model:
+  type: SimpleHistonesAutoencoder
+  args:
+    latent_dim: 8
+metrics:
+  - name: MeanSquaredError
+    kwargs: {}
+    metric_kwargs: {}

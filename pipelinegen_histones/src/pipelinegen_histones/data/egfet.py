@@ -36,6 +36,7 @@ from typing import List, Optional
 from histones.egfet.load_data import load_egfet_dataset
 from pipelinegen_histones.utils import RepeatedGroupKFold
 from pipelinegen.core.data.factory import AbstractDatasetBuilder
+from pipelinegen.core.data.prototype import DatasetTransformAdapter
 from pipelinegen.core.data.utils import MultiArgCompose
 
 
@@ -110,6 +111,47 @@ def get_train_test_group_splits(stratify_groups, test_size=0.2):
     return train_indices, test_indices
 
 
+class EGFETDataset(pl.LightningDataModule):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        self.dataset = None
+        self.train_dataset = None
+        self.test_dataset = None
+    
+    def prepare_data(self):
+        self.train_dataset, self.test_dataset = EGFETDataset.build_dataset_splits(
+            **self.config
+        )
+    
+    def setup(self, stage=None):
+        if stage == "fit" or stage is None:
+            self.dataset = self.train_dataset
+        if stage == "test" or stage is None:
+            self.dataset = self.test_dataset
+        
+    def train_dataloader(self):
+
+        dataloader_args = self.config.get("dataloader_args", {"batch_size": 32, "shuffle": True}) 
+        return DataLoader(
+            self.train_dataset,
+            **dataloader_args
+        )
+
+    def val_dataloader(self):
+        dataloader_args = self.config.get("dataloader_args", {"batch_size": 32, "shuffle": False}) 
+        return DataLoader(
+            self.test_dataset,
+            **dataloader_args
+        )
+    def test_dataloader(self):
+        dataloader_args = self.config.get("dataloader_args", {"batch_size": 32, "shuffle": False}) 
+        return DataLoader(
+            self.test_dataset,
+            **dataloader_args
+        )
+
+
 class EGFETDataset(Dataset):
     def __init__(
         self,
@@ -122,11 +164,11 @@ class EGFETDataset(Dataset):
     ):
         df = load_egfet_dataset(
             path,
-            exclude_experiment=exclude_experiment,
+            exclude_experiments=exclude_experiment,
             exclude_concentration=exclude_concentration,
             load_only=include_only,
             downsample=downsample,
-            verbose_loading=verbose_loading,
+            verbose=verbose_loading,
         )
         self.data, self.target, self.concentration, self.stratify_groups = prepare_data(df)
         self.data = torch.tensor(self.data, dtype=torch.float32)
@@ -230,7 +272,6 @@ class EGFETDatasetBuilder(AbstractDatasetBuilder):
         self,
         **config,
     ) -> EGFETDataset:
-        dataset_name = config["name"]
-        dataset_params = config["args"]
-        dataset = self._builders[dataset_name](**dataset_params)
-        return dataset
+        return EGFETDataset.build_dataset_splits(
+            **config,
+        )
